@@ -9,7 +9,9 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 from common import FIGURES, TABLES
 
 INK, INK2 = "#0b0b0b", "#52514e"
-C1, C2, C3, C4 = "#2a78d6", "#eb6834", "#1baf7a", "#c98500"
+# grayscale only: dark = ML / emphasis, light = conventional
+C1, C2, C3, C4 = "#2b2b2b", "#a6a6a6", "#2b2b2b", "#2b2b2b"
+HI_FILL, LO_FILL, HI_EDGE, LO_EDGE = "#cfcfcf", "#f2f2f2", "#0b0b0b", "#6b6b6b"
 
 place = pd.read_csv(TABLES / "box_placement_runs.csv")
 prio = pd.read_csv(TABLES / "box_prioritisation_runs.csv")
@@ -28,7 +30,7 @@ def panel(x, title, color):
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
     ax.add_patch(FancyBboxPatch((0.01, 0.01), 0.98, 0.98, boxstyle="round,pad=0,rounding_size=0.03",
                                 fc="white", ec=color, lw=2))
-    ax.text(0.5, 0.93, title, ha="center", va="center", fontsize=13, weight="bold", color=color)
+    ax.text(0.5, 0.93, title, ha="center", va="center", fontsize=13, weight="bold", color=INK)
     return ax
 
 
@@ -38,13 +40,13 @@ labels = [["6", "8", "9"], ["3", "5", "7"], ["1", "2", "4"]]  # PermenPANRB 20/2
 for i in range(3):
     for j in range(3):
         hi = labels[i][j] in ("8", "9")
-        a.add_patch(plt.Rectangle((0.2 + j * 0.22, 0.56 - i * 0.16), 0.2, 0.14, fc="#fdebe2" if hi else "#e8eef7",
-                                  ec=C2 if hi else C1, lw=2 if hi else 1))
+        a.add_patch(plt.Rectangle((0.2 + j * 0.22, 0.56 - i * 0.16), 0.2, 0.14, fc=HI_FILL if hi else LO_FILL,
+                                  ec=HI_EDGE if hi else LO_EDGE, lw=2.2 if hi else 1))
         a.text(0.3 + j * 0.22, 0.63 - i * 0.16, f"Box {labels[i][j]}", ha="center", va="center", fontsize=9.5,
                weight="bold" if hi else "normal")
 a.text(0.53, 0.18, "Performance = official appraisal (kept)", ha="center", fontsize=9.5, color=INK)
 a.text(0.08, 0.48, "Potential", rotation=90, ha="center", va="center", fontsize=9.5, color=INK)
-a.text(0.53, 0.09, "Boxes 8–9 = high-potential pool (7–9 = agency pool)", ha="center", fontsize=9.5, color=C2, weight="bold")
+a.text(0.53, 0.09, "Boxes 8–9 = high-potential pool (7–9 = agency pool)", ha="center", fontsize=9.5, color=INK, weight="bold")
 
 # Panel 2: two-stage ML
 b = panel(0.355, "2  Two-stage ML + accountability", C3)
@@ -54,7 +56,7 @@ steps = ["Stage 1: age-blind CatBoost calibrates potential", "Stage 2: rank boxe
 for i, s in enumerate(steps):
     y = 0.78 - i * 0.125
     b.add_patch(FancyBboxPatch((0.06, y - 0.045), 0.88, 0.09, boxstyle="round,pad=0.005,rounding_size=0.02",
-                               fc="#fff4d6" if i < 2 else "#e3f4ec", ec=C4 if i < 2 else C3, lw=1))
+                               fc=HI_FILL if i < 2 else LO_FILL, ec="#333333", lw=1))
     b.text(0.5, y, s, ha="center", va="center", fontsize=9.6, color=INK)
     if i < len(steps) - 1:
         b.add_patch(FancyArrowPatch((0.5, y - 0.047), (0.5, y - 0.078), arrowstyle="-|>", mutation_scale=8, color=INK2))

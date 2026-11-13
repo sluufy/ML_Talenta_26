@@ -7,9 +7,10 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 from common import FIGURES
 
-INK, INK2 = "#0b0b0b", "#52514e"
-FILL = {"data": "#e8eef7", "eval": "#fdebe2", "trust": "#e3f4ec", "decision": "#fff4d6"}
-EDGE = {"data": "#2a78d6", "eval": "#eb6834", "trust": "#1baf7a", "decision": "#c98500"}
+# grayscale only (print-friendly): groups are distinguished by fill shade
+INK, INK2, LINE = "#0b0b0b", "#3d3d3d", "#333333"
+FILL = {"data": "#ffffff", "eval": "#eeeeee", "trust": "#c9c9c9", "decision": "#dcdcdc"}
+EDGE = {k: LINE for k in FILL}
 
 TEXT = {
     "en": [
@@ -42,9 +43,9 @@ TEXT = {
 POS = [(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (4, 0), (3, 0), (2, 0), (1, 0), (0, 0)]
 
 for lang, items in TEXT.items():
-    fig, ax = plt.subplots(figsize=(11, 3.5))
+    fig, ax = plt.subplots(figsize=(12, 3.6))
     ax.set_xlim(-0.1, 5.0); ax.set_ylim(-0.15, 1.62); ax.axis("off")
-    W, H = 0.9, 0.62
+    W, H = 0.88, 0.62
     centers = []
     for (kind, label), (cx, cy) in zip(items, POS):
         x, y = cx * 0.98 + 0.02, cy * 0.85 + 0.1
@@ -62,7 +63,7 @@ for lang, items in TEXT.items():
             end = (x1, y1 + H / 2) if x1 > x0 else (x1 + W, y1 + H / 2)
         else:
             start, end = (x0 + W / 2, y0), (x1 + W / 2, y1 + H)
-        ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>", mutation_scale=12, color=INK2, lw=1.2))
+        ax.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>", mutation_scale=12, color=LINE, lw=1.2))
     legend = {"en": ["Data & leakage control", "Model selection", "Accountability", "Regulation-compliant talent placement"],
               "id": ["Data & kontrol kebocoran", "Pemilihan model", "Akuntabilitas", "Penempatan talenta patuh regulasi"]}[lang]
     for j, (kind, name) in enumerate(zip(FILL, legend)):

@@ -46,6 +46,7 @@ python ibm_leakage.py           # Eksperimen 1: audit kebocoran IBM
 python run_benchmark.py         # Eksperimen 2: 7 model x 3 tugas x 10 ulangan + uji Friedman/Wilcoxon-Holm
 python run_trust.py             # Eksperimen 3: kalibrasi, SHAP, keadilan, konformal, 9-box, analisis error
 python run_conformal_repeats.py # Eksperimen 4: cakupan konformal pada 10 ulangan
+python plot_conformal_repeats.py # gambar cakupan konformal (fig_conformal_coverage_*.png)
 python run_fairness_repeats.py  # Eksperimen 5: audit & mitigasi keadilan pada 10 ulangan
 python run_talent_box.py        # Eksperimen 6 (utama): penempatan kotak 9-box & prioritas kotak 8-9
 python run_box_extras.py        # Eksperimen 7: model buta-usia & rujukan konformal di kotak 8-9
@@ -58,6 +59,23 @@ python make_graphical_abstract.py
 
 Atau buka `code/reproduce.ipynb` (set `RUN_EXPERIMENTS = True` untuk menjalankan ulang semuanya, ±30 menit di CPU 16 inti).
 Seluruh pembagian data memakai *seed* tetap sehingga hasil dapat direproduksi.
+
+## Pengujian
+
+```
+python -m unittest discover -s tests -v   # 8 uji unit, < 5 detik, tanpa data asli
+python tests/smoke_pipeline.py             # uji end-to-end pada data sintetis (±1 menit)
+```
+
+Uji unit (`tests/test_core.py`) memeriksa jaminan metodologis yang dipakai naskah:
+- penomoran kotak di semua skrip sama dengan Lampiran PermenPANRB 20/2025 (kotak 7-9 = suksesi instansi);
+- partisi *tuning* 20% tidak pernah dipakai untuk evaluasi; pembagian 60/10/10/20 saling lepas, terstratifikasi, dan dapat diulang;
+- gender dan `is_promoted` tidak pernah menjadi fitur; sumbu potensi tidak memakai nilai kinerja;
+- prediksi konformal Mondrian menjamin cakupan di setiap kelas, sedangkan cakupan marginal gagal pada kelas langka;
+- perhitungan ECE.
+
+`tests/smoke_pipeline.py` membangkitkan data sintetis (`code/make_smoke_data.py`) dan menjalankan eksperimen utama
+(`run_talent_box.py`, `run_box_extras.py`) ke direktori sementara. Data sintetis tidak pernah dipakai untuk hasil yang dilaporkan.
 
 ## Gambar yang dipakai di naskah
 
