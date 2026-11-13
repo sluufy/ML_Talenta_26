@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite it as below."
+title: "Regulation-compliant machine learning for civil-service nine-box talent placement and promotion prioritisation (boxes 8-9)"
+authors:
+  - family-names: Pahlupi
+    given-names: Sohib
+    affiliation: "Universitas Nusa Mandiri, Jakarta, Indonesia"
+repository-code: "https://github.com/sluufy/ML_Talenta_26"
+license: MIT
+version: "1.0.0"
+date-released: "2026-11-13"
+keywords:
+  - talent management
+  - nine-box grid
+  - machine learning
+  - conformal prediction
+  - algorithmic fairness
+  - public sector

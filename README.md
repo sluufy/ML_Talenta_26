@@ -18,6 +18,8 @@ manuscripts/   Manuskrip_Q1_EN/ID (format jurnal) dan Paper_UTS_AdvML_EN/ID (tem
 submission/    berkas pengiriman jurnal: naskah anonim, title page, cover letter, graphical abstract
 references/    reference_checklist.csv (verifikasi Scopus), scopus_export.csv
 requirements.txt
+LICENSE        MIT (kode); data mengikuti lisensi sumbernya
+CITATION.cff   cara mengutip repositori ini
 ```
 
 ## Data
@@ -43,6 +45,7 @@ python run_conformal_repeats.py # Eksperimen 4: cakupan konformal pada 10 ulanga
 python run_fairness_repeats.py  # Eksperimen 5: audit & mitigasi keadilan pada 10 ulangan
 python run_talent_box.py        # Eksperimen 6 (utama): penempatan kotak 9-box & prioritas kotak 8-9
 python run_box_extras.py        # Eksperimen 7: model buta-usia & rujukan konformal di kotak 8-9
+python run_robustness.py         # Eksperimen 8: uji ketahanan (definisi alternatif) & interval kepercayaan bootstrap
 python make_pipeline_figure.py  # Gambar 1
 python plot_figures.py          # gambar hasil versi EN dan ID
 python plot_talent_box.py       # gambar kotak sembilan & kurva prioritas (EN dan ID)
