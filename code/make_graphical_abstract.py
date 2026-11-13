@@ -13,7 +13,8 @@ C1, C2, C3, C4 = "#2a78d6", "#eb6834", "#1baf7a", "#c98500"
 
 place = pd.read_csv(TABLES / "box_placement_runs.csv")
 prio = pd.read_csv(TABLES / "box_prioritisation_runs.csv")
-rec = place[place.set == "Box 9"].groupby("method").recall.mean()
+prio = prio[prio["pool"] == "8-9"]
+rec = place[place.set == "Boxes 8-9"].groupby("method").recall.mean()
 p10 = prio[prio.top_frac == 0.10].groupby("ranker").precision.mean()
 
 fig = plt.figure(figsize=(13.28, 5.31))
@@ -33,7 +34,7 @@ def panel(x, title, color):
 
 # Panel 1: regulatory nine-box
 a = panel(0.02, "1  Regulatory nine-box", C1)
-labels = [["4", "7", "9"], ["2", "5", "8"], ["1", "3", "6"]]
+labels = [["4", "8", "9"], ["2", "5", "7"], ["1", "3", "6"]]
 for i in range(3):
     for j in range(3):
         hi = labels[i][j] in ("8", "9")
@@ -43,7 +44,7 @@ for i in range(3):
                weight="bold" if hi else "normal")
 a.text(0.53, 0.18, "Performance = official appraisal (kept)", ha="center", fontsize=9.5, color=INK)
 a.text(0.08, 0.48, "Potential", rotation=90, ha="center", va="center", fontsize=9.5, color=INK)
-a.text(0.53, 0.09, "Boxes 8–9 = promotion-eligible pool", ha="center", fontsize=10, color=C2, weight="bold")
+a.text(0.53, 0.09, "Boxes 8–9 = high-potential pool (7–9 = agency pool)", ha="center", fontsize=9.5, color=C2, weight="bold")
 
 # Panel 2: two-stage ML
 b = panel(0.355, "2  Two-stage ML + accountability", C3)
@@ -61,7 +62,7 @@ for i, s in enumerate(steps):
 # Panel 3: results
 c = panel(0.69, "3  Evidence (10 held-out splits)", C4)
 for k, (title, vals, ypos) in enumerate([
-        ("Box 9 recall of promoted employees", [("Conventional", rec["Conventional"], C2),
+        ("Boxes 8–9 recall of promoted employees", [("Conventional", rec["Conventional"], C2),
                                                ("ML, age-blind", rec["ML-assisted (age-blind)"], C1)], 0.55),
         ("Top-10% precision inside boxes 8–9", [("Raw score", p10["Training score"], C2),
                                                ("ML, age-blind", p10["CatBoost (age-blind)"], C1)], 0.21)]):
@@ -69,11 +70,11 @@ for k, (title, vals, ypos) in enumerate([
     ax.barh([v[0] for v in vals], [v[1] for v in vals], color=[v[2] for v in vals], height=0.55)
     for i, v in enumerate(vals):
         ax.text(v[1] + 0.02, i, f"{v[1]:.3f}", va="center", fontsize=10)
-    ax.set_xlim(0, 1.05 if k else 0.4); ax.set_title(title, fontsize=9.5, color=INK2)
+    ax.set_xlim(0, 1.05); ax.set_title(title, fontsize=9.5, color=INK2)
     ax.tick_params(labelsize=9)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-c.text(0.5, 0.05, "Box 9 age gap removed; no promotee rejected", ha="center", fontsize=9.6, weight="bold",
+c.text(0.5, 0.05, "Smaller age gap; unsure cases deferred", ha="center", fontsize=9.6, weight="bold",
        color=C4)
 
 for x0 in (0.315, 0.65):

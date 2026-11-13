@@ -1,7 +1,8 @@
 """Experiment 6: regulation-compliant ML for nine-box talent placement (boxes 8-9) and promotion prioritisation.
 
 Nine-box layout (PermenPANRB 3/2020): performance axis x potential axis, three levels each.
-  Box 9 = performance above expectation & high potential; Box 8 = performance above expectation & medium potential.
+  Box 9 = above expectation & high potential; Box 8 = as expected & high potential;
+  Box 7 = above expectation & medium potential. Agency succession pool = boxes 7-9.
 Performance axis (observed appraisal, never predicted): rating 5 = above expectation, 3-4 = as expected, 1-2 = below.
 
 Stage 1 - placement. Potential axis from (a) conventional: tertiles of the assessment proxy (average training score);
@@ -26,7 +27,7 @@ from run_trust import conformal_sets
 LEVELS = ["Low", "Medium", "High"]
 # box number by (performance, potential) - PermenPANRB 3/2020 layout
 BOX_NO = {("Low", "Low"): 1, ("Low", "Medium"): 2, ("Medium", "Low"): 3, ("Low", "High"): 4, ("Medium", "Medium"): 5,
-          ("High", "Low"): 6, ("Medium", "High"): 7, ("High", "Medium"): 8, ("High", "High"): 9}
+          ("High", "Low"): 6, ("High", "Medium"): 7, ("Medium", "High"): 8, ("High", "High"): 9}
 FRACS = [0.05, 0.10, 0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
 
 
@@ -98,7 +99,7 @@ for r in range(10):
     for m, pa in axes.items():
         box = np.array([BOX_NO[(p, q)] for p, q in zip(perf, pa)])
         boxes[m] = box
-        for name, sel in [("Box 9", box == 9), ("Boxes 8-9", box >= 8)]:
+        for name, sel in [("Box 9", box == 9), ("Boxes 8-9", box >= 8), ("Boxes 7-9", box >= 7)]:
             tp_ = yt[sel].sum()
             place.append({"repeat": r, "method": m, "set": name, "share": sel.mean(), "precision": yt[sel].mean(),
                           "recall": tp_ / yt.sum(), "lift": yt[sel].mean() / yt.mean()})
@@ -115,17 +116,20 @@ for r in range(10):
     for m in ["Dept-normalised", "ML-assisted", "ML-assisted (age-blind)"]:
         agree.append({"repeat": r, "method": m, "kappa_vs_conventional": cohen_kappa_score(boxes["Conventional"], boxes[m]),
                       "share_changed_box": (boxes["Conventional"] != boxes[m]).mean(),
-                      "share_changed_89_membership": ((boxes["Conventional"] >= 8) != (boxes[m] >= 8)).mean()})
+                      "share_changed_89_membership": ((boxes["Conventional"] >= 8) != (boxes[m] >= 8)).mean(),
+                      "share_changed_79_membership": ((boxes["Conventional"] >= 7) != (boxes[m] >= 7)).mean()})
 
     # Stage 2: prioritisation inside the (conventional) boxes 8-9 pool
-    pool = np.where(boxes["Conventional"] >= 8)[0]
-    rankers = {"Training score": score, "Dept-normalised score": z, "Logistic regression": lr_te[rated],
-               "CatBoost (ML)": tal_te[rated], "CatBoost (age-blind)": talnb_te[rated], "Random": np.random.default_rng(SEED + r).random(len(score))}
-    for frac in FRACS:
+    for pool_name, pool_min in [("8-9", 8), ("7-9", 7)]:
+     pool = np.where(boxes["Conventional"] >= pool_min)[0]
+     rankers = {"Training score": score, "Dept-normalised score": z, "Logistic regression": lr_te[rated],
+                "CatBoost (ML)": tal_te[rated], "CatBoost (age-blind)": talnb_te[rated], "Random": np.random.default_rng(SEED + r).random(len(score))}
+     for frac in FRACS:
         k = max(1, int(round(frac * len(pool))))
         for name, sc in rankers.items():
             top = pool[np.argsort(-sc[pool], kind="stable")[:k]]
-            prio.append({"repeat": r, "ranker": name, "top_frac": frac, "k": k, "precision": yt[top].mean(),
+            prio.append({"repeat": r, "pool": pool_name, "ranker": name, "top_frac": frac, "k": k,
+                         "precision": yt[top].mean(),
                          "recall_in_pool": yt[top].sum() / max(1, yt[pool].sum()),
                          "female_share": (g[top] == "Female").mean(), "age40_share": (a[top] == ">=40").mean()})
 
@@ -155,7 +159,7 @@ ps = P.groupby(["set", "method"])[["share", "precision", "recall", "lift"]].agg(
 ps.to_csv(TABLES / "box_placement_summary.csv"); print(ps.round(3).to_string())
 
 tests = []
-for st in ["Box 9", "Boxes 8-9"]:
+for st in ["Box 9", "Boxes 8-9", "Boxes 7-9"]:
     for metric in ["precision", "recall"]:
         w = P[P.set == st].pivot(index="repeat", columns="method", values=metric)
         for ml in ["ML-assisted", "ML-assisted (age-blind)"]:
@@ -165,10 +169,10 @@ for st in ["Box 9", "Boxes 8-9"]:
                               "mean_ml": w[ml].mean(), "mean_other": w[m].mean(),
                               "rel_gain_%": 100 * (w[ml].mean() / w[m].mean() - 1),
                               "ml_better_in": int((w[ml] > w[m]).sum()), "p_raw": raw[m], "p_holm": padj})
-qs = Q.groupby(["top_frac", "ranker"])[["precision", "recall_in_pool", "female_share", "age40_share"]].agg(["mean", "std"])
+qs = Q.groupby(["pool", "top_frac", "ranker"])[["precision", "recall_in_pool", "female_share", "age40_share"]].agg(["mean", "std"])
 qs.columns = [f"{x}_{y}" for x, y in qs.columns]; qs.to_csv(TABLES / "box_prioritisation_summary.csv")
 for frac in [0.10, 0.25, 0.50]:
-    w = Q[Q.top_frac == frac].pivot(index="repeat", columns="ranker", values="precision")
+    w = Q[(Q.top_frac == frac) & (Q["pool"] == "8-9")].pivot(index="repeat", columns="ranker", values="precision")
     for ml in ["CatBoost (ML)", "CatBoost (age-blind)"]:
         raw = {m: wilcoxon(w[ml], w[m]).pvalue for m in ["Training score", "Dept-normalised score", "Logistic regression"]}
         for m, padj in holm(raw).items():
@@ -178,7 +182,7 @@ for frac in [0.10, 0.25, 0.50]:
                           "ml_better_in": int((w[ml] > w[m]).sum()), "p_raw": raw[m], "p_holm": padj})
 T = pd.DataFrame(tests); T.to_csv(TABLES / "box_tests.csv", index=False)
 print(T.round(4).to_string())
-print(qs.loc[[0.1, 0.25, 0.5]][["precision_mean", "precision_std", "recall_in_pool_mean", "female_share_mean", "age40_share_mean"]].round(3).to_string())
+print(qs.loc["8-9"].loc[[0.1, 0.25, 0.5]][["precision_mean", "precision_std", "recall_in_pool_mean", "female_share_mean", "age40_share_mean"]].round(3).to_string())
 print(D.mean(numeric_only=True).round(3).to_string())
 fs = F.groupby(["set", "method", "attribute"])[["selection_rate_diff", "tpr_diff"]].agg(["mean", "std"])
 fs.columns = [f"{x}_{y}" for x, y in fs.columns]; fs.to_csv(TABLES / "box_fairness_summary.csv"); print(fs.round(3).to_string())

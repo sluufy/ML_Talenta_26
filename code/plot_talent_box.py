@@ -27,9 +27,10 @@ L = {
                     "Random": "Urutan acak"}},
 }
 BOX_NO = {("Low", "Low"): 1, ("Low", "Medium"): 2, ("Medium", "Low"): 3, ("Low", "High"): 4, ("Medium", "Medium"): 5,
-          ("High", "Low"): 6, ("Medium", "High"): 7, ("High", "Medium"): 8, ("High", "High"): 9}
+          ("High", "Low"): 6, ("High", "Medium"): 7, ("Medium", "High"): 8, ("High", "High"): 9}
 cells = pd.read_csv(TABLES / "box_cells_summary.csv")
 prio = pd.read_csv(TABLES / "box_prioritisation_runs.csv")
+prio = prio[prio["pool"] == "8-9"]
 
 for lang, T in L.items():
     # nine-box comparison: x = performance, y = potential (ASN layout)
@@ -48,8 +49,10 @@ for lang, T in L.items():
                 ax.text(j, i + 0.12, loc(f"{v:.1%}\nn = {n:,.0f}", lang), ha="center", va="center", fontsize=8,
                         color="white" if v > 0.55 * vmax else INK)
         im = ax.imshow(grid, cmap="Blues", vmin=0, vmax=vmax)
-        for (i, j) in [(0, 2), (1, 2)]:
+        for (i, j) in [(0, 1), (0, 2)]:  # boxes 8 and 9 (high potential, promotion-eligible)
             ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, ec="#eb6834", lw=2.4))
+        # box 7 completes the agency succession pool
+        ax.add_patch(plt.Rectangle((1.5, 0.5), 1, 1, fill=False, ec="#eb6834", lw=1.4, ls="--"))
         ax.set_xticks(range(3), T["perf_lv"])
         ax.set_yticks(range(3), T["lv"][::-1] if method == "Conventional" else [""] * 3)
         ax.set(xlabel=T["perf"], ylabel=T["pot"] if method == "Conventional" else "", title=title)

@@ -14,7 +14,7 @@ Xp, y, sens, cat_p, num_p = task_frame(df, "potential")
 Xt, _, _, cat_t, num_t = task_frame(df, "talent")
 extra = sens.assign(rating=df["previous_year_rating"].to_numpy(), idx=np.arange(len(df)))
 BOX_NO = {("Low", "Low"): 1, ("Low", "Medium"): 2, ("Medium", "Low"): 3, ("Low", "High"): 4, ("Medium", "Medium"): 5,
-          ("High", "Low"): 6, ("Medium", "High"): 7, ("High", "Medium"): 8, ("High", "High"): 9}
+          ("High", "Low"): 6, ("High", "Medium"): 7, ("Medium", "High"): 8, ("High", "High"): 9}
 
 
 def tertile(v, ref):

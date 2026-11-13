@@ -1,9 +1,9 @@
 """Experiment 8: robustness of the nine-box results and bootstrap confidence intervals.
 
 Variants (age-blind ML vs conventional):
-  base        layout A (box 8 = above/medium), performance 5 = above, potential tertiles
+  base        official layout (box 8 = as expected/high), performance 5 = above, potential tertiles
   perf45      performance 4-5 = above, 3 = as expected
-  layoutB     box 8 = as expected/high potential
+  altlayout   alternative numbering (box 8 = above/medium potential)
   quartiles   potential cut at quartiles (low < Q1, medium Q1-Q3, high >= Q3)
 For each variant: box 9 and boxes 8-9 precision/recall, paired Wilcoxon over 10 splits, and prioritisation precision
 inside the conventional boxes 8-9 pool. For the base variant, 95% bootstrap CIs (1,000 employee resamples per split,
@@ -21,12 +21,12 @@ from common import SEED, TABLES, build_pipeline, load_promotion, model_zoo, spli
 B = 1000
 rng = np.random.default_rng(SEED)
 VARIANTS = {
-    "base": dict(perf=(5, 3), layout="A", cuts=(1 / 3, 2 / 3)),
-    "perf45": dict(perf=(4, 3), layout="A", cuts=(1 / 3, 2 / 3)),
-    "layoutB": dict(perf=(5, 3), layout="B", cuts=(1 / 3, 2 / 3)),
-    "quartiles": dict(perf=(5, 3), layout="A", cuts=(0.25, 0.75)),
+    "base": dict(perf=(5, 3), layout="ASN", cuts=(1 / 3, 2 / 3)),
+    "perf45": dict(perf=(4, 3), layout="ASN", cuts=(1 / 3, 2 / 3)),
+    "altlayout": dict(perf=(5, 3), layout="ALT", cuts=(1 / 3, 2 / 3)),
+    "quartiles": dict(perf=(5, 3), layout="ASN", cuts=(0.25, 0.75)),
 }
-BOX89 = {"A": {("High", "High"): 9, ("High", "Medium"): 8}, "B": {("High", "High"): 9, ("Medium", "High"): 8}}
+BOX89 = {"ASN": {("High", "High"): 9, ("Medium", "High"): 8}, "ALT": {("High", "High"): 9, ("High", "Medium"): 8}}
 
 
 def levels(v, ref, cuts):
