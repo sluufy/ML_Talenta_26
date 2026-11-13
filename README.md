@@ -8,6 +8,10 @@ yang layak berada di kotak talenta 8-9 (layak promosi) tanpa melanggar aturan ma
 ML (CatBoost buta-usia) mengalibrasi sumbu potensi (Tahap 1) dan memprioritaskan kandidat di dalam kotak 8-9
 (Tahap 2), dilengkapi audit kebocoran, SHAP, audit keadilan, dan rujukan konformal Mondrian ke komite talenta.
 
+Penomoran kotak mengikuti Lampiran PermenPANRB 20/2025: kotak 9 = kinerja di atas ekspektasi & potensial tinggi,
+kotak 8 = sesuai ekspektasi & potensial tinggi, kotak 7 = di atas ekspektasi & potensial menengah
+(kotak 7-9 = kelompok rencana suksesi instansi; kotak 9 = kelompok rencana suksesi nasional).
+
 ## Struktur folder
 
 ```

@@ -26,8 +26,9 @@ L = {
                     "Logistic regression": "Regresi logistik", "CatBoost (age-blind)": "CatBoost buta-usia (usulan)",
                     "Random": "Urutan acak"}},
 }
-BOX_NO = {("Low", "Low"): 1, ("Low", "Medium"): 2, ("Medium", "Low"): 3, ("Low", "High"): 4, ("Medium", "Medium"): 5,
-          ("High", "Low"): 6, ("High", "Medium"): 7, ("Medium", "High"): 8, ("High", "High"): 9}
+# (performance, potential) -> box, Annex of PermenPANRB 20/2025
+BOX_NO = {("Low", "Low"): 1, ("Medium", "Low"): 2, ("Low", "Medium"): 3, ("High", "Low"): 4, ("Medium", "Medium"): 5,
+          ("Low", "High"): 6, ("High", "Medium"): 7, ("Medium", "High"): 8, ("High", "High"): 9}
 cells = pd.read_csv(TABLES / "box_cells_summary.csv")
 prio = pd.read_csv(TABLES / "box_prioritisation_runs.csv")
 prio = prio[prio["pool"] == "8-9"]

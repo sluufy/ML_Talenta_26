@@ -34,7 +34,7 @@ def panel(x, title, color):
 
 # Panel 1: regulatory nine-box
 a = panel(0.02, "1  Regulatory nine-box", C1)
-labels = [["4", "8", "9"], ["2", "5", "7"], ["1", "3", "6"]]
+labels = [["6", "8", "9"], ["3", "5", "7"], ["1", "2", "4"]]  # PermenPANRB 20/2025 Annex
 for i in range(3):
     for j in range(3):
         hi = labels[i][j] in ("8", "9")
