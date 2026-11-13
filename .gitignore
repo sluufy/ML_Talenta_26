@@ -1,0 +1,12 @@
+__pycache__/
+.venv/
+.ipynb_checkpoints/
+catboost_info/
+# Kaggle dataset: redistribute only per its licence; download from source instead
+data/raw/promotion_train.csv
+
+# manuscripts are not published before peer review / grading
+manuscripts/
+submission/
+# Scopus export contains licensed abstracts - keep local only
+references/scopus_export.csv

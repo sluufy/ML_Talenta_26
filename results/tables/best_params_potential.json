@@ -1,0 +1,40 @@
+{
+  "LR": {
+    "clf__C": 16.23776739188721
+  },
+  "RF": {
+    "clf__min_samples_leaf": 2,
+    "clf__max_features": 0.5,
+    "clf__max_depth": 16
+  },
+  "XGBoost": {
+    "clf__subsample": 0.7,
+    "clf__min_child_weight": 1,
+    "clf__max_depth": 3,
+    "clf__learning_rate": 0.05,
+    "clf__colsample_bytree": 0.8
+  },
+  "LightGBM": {
+    "clf__subsample_freq": 1,
+    "clf__subsample": 0.7,
+    "clf__num_leaves": 15,
+    "clf__min_child_samples": 20,
+    "clf__learning_rate": 0.03,
+    "clf__colsample_bytree": 0.6
+  },
+  "LightGBM-CW": {
+    "clf__num_leaves": 15,
+    "clf__min_child_samples": 20,
+    "clf__learning_rate": 0.05,
+    "clf__colsample_bytree": 0.6
+  },
+  "CatBoost": {
+    "clf__learning_rate": 0.03,
+    "clf__l2_leaf_reg": 10,
+    "clf__depth": 6
+  },
+  "MLP": {
+    "clf__learning_rate_init": 0.001,
+    "clf__alpha": 0.1
+  }
+}

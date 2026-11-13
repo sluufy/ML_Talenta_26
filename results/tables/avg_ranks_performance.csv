@@ -1,0 +1,8 @@
+model,PR-AUC,MCC
+CatBoost,1.7,3.1
+LR,5.6,6.7
+LightGBM,5.1,4.3
+LightGBM-CW,4.2,4.1
+MLP,5.7,4.3
+RF,3.2,2.5
+XGBoost,2.5,3.0

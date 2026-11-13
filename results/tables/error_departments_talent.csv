@@ -1,0 +1,5 @@
+outcome,department
+FN,"{'Sales & Marketing': 0.262, 'Operations': 0.195, 'Technology': 0.171}"
+FP,"{'Technology': 0.388, 'Operations': 0.194, 'Procurement': 0.146}"
+TN,"{'Sales & Marketing': 0.315, 'Operations': 0.203, 'Procurement': 0.13}"
+TP,"{'Operations': 0.294, 'Sales & Marketing': 0.248, 'Procurement': 0.154}"
