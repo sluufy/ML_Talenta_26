@@ -1,4 +1,4 @@
-# Regulation-compliant ML for Nine-Box Talent Placement and Promotion (Boxes 8-9)
+# A Machine Learning-Based Decision Support System for Nine-Box Talent Placement (Boxes 8-9)
 
 Sohib Pahlupi — Magister Sistem Informasi, Universitas Nusa Mandiri
 

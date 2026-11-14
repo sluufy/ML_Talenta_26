@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or these results, please cite it as below."
-title: "Regulation-compliant machine learning for civil-service nine-box talent placement and promotion prioritisation (boxes 8-9)"
+title: "A machine learning-based decision support system for civil-service nine-box talent placement with conformal deferral and fairness auditing"
 authors:
   - family-names: Pahlupi
     given-names: Sohib
@@ -15,4 +15,5 @@ keywords:
   - machine learning
   - conformal prediction
   - algorithmic fairness
+  - decision support system
   - public sector
